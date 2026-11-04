@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billotte Swim Analysis — Race Video Breakdowns for Age-Group Swimmers</title>
+<meta name="description" content="Send your swimmer's race video and get a coach's frame-by-frame breakdown within 48 hours. Built for age-group swimmers and the parents filming them.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230B1220'/%3E%3Ctext x='50' y='66' font-family='Arial' font-weight='900' font-size='42' fill='%23F2B84B' text-anchor='middle'%3EJB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  :root{
+    --ink:#0B1220;
+    --pool:#12324A;
+    --pool-2:#0E2638;
+    --cyan:#3FD6E0;
+    --gold:#F2B84B;
+    --coral:#FF6B57;
+    --foam:#F6FBFB;
+    --white:#FFFFFF;
+    --navy:#132538;
+    --navy-soft:#51697D;
+    --border:#E1EEEE;
+    --font-display:"Big Shoulders Display", sans-serif;
+    --font-body:"Manrope", sans-serif;
+    --font-mono:"Space Mono", monospace;
+    --container:1120px;
+  }
+
+  html{ -webkit-font-smoothing:antialiased; }
+  @media (prefers-reduced-motion: no-preference){ html{ scroll-behavior:smooth; } }
+
+  body{
+    font-family:var(--font-body);
+    color:var(--navy);
+    background:var(--foam);
+    line-height:1.6;
+  }
+
+  img, svg{ display:block; max-width:100%; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+  button{ font:inherit; background:none; border:none; cursor:pointer; color:inherit; }
+
+  .container{ max-width:var(--container); margin:0 auto; padding:0 28px; }
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:800;
+    line-height:1.03;
+    letter-spacing:0.2px;
+    text-transform:uppercase;
+    color:var(--navy);
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--navy-soft);
+    font-weight:700;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--cyan);
+    display:inline-block;
+  }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+    outline:3px solid var(--cyan);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  .section{ padding:104px 0; }
+  .section__head{ max-width:640px; margin-bottom:56px; }
+  .section__head h2{ font-size:clamp(30px,4vw,46px); margin-top:14px; }
+  .section__head p{ color:var(--navy-soft); font-size:17px; margin-top:16px; max-width:52ch; }
+  .section--dark{ background:linear-gradient(180deg, var(--pool-2), var(--ink)); color:var(--foam); }
+  .section--dark h2, .section--dark h3{ color:var(--foam); }
+  .section--dark .eyebrow{ color:var(--cyan); }
+  .section--dark p{ color:rgba(246,251,251,0.78); }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--font-body);
+    font-weight:700;
+    font-size:15px;
+    padding:15px 28px;
+    border-radius:999px;
+    border:2px solid transparent;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, color .18s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn--primary{ background:var(--gold); color:var(--ink); }
+  .btn--primary:hover{ box-shadow:0 14px 28px rgba(242,184,75,0.32); }
+  .btn--ghost{ background:transparent; color:var(--foam); border-color:rgba(246,251,251,0.35); }
+  .btn--ghost:hover{ border-color:var(--cyan); color:var(--cyan); }
+  .btn--outline{ background:transparent; color:var(--navy); border-color:var(--border); }
+  .btn--outline:hover{ border-color:var(--pool); }
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky; top:0; z-index:60;
+    background:rgba(11,18,32,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .nav .container{ display:flex; align-items:center; justify-content:space-between; height:78px; position:relative; }
+  .nav__brand{ display:flex; align-items:center; gap:12px; }
+  .nav__mark{
+    width:42px; height:42px; border-radius:11px; background:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:900; color:var(--ink); font-size:18px;
+    flex-shrink:0;
+  }
+  .nav__word{ font-family:var(--font-display); font-weight:800; color:var(--foam); font-size:16px; letter-spacing:0.05em; }
+  .nav__word small{ display:block; font-family:var(--font-mono); font-size:10px; color:var(--cyan); letter-spacing:0.14em; font-weight:400; text-transform:uppercase; margin-top:2px; }
+  .nav__links{ display:flex; gap:34px; align-items:center; }
+  .nav__links a{ font-size:14px; font-weight:600; color:rgba(246,251,251,0.82); transition:color .15s ease; }
+  .nav__links a:hover{ color:var(--cyan); }
+  .nav__right{ display:flex; align-items:center; gap:18px; }
+  .nav__toggle{ display:none; flex-direction:column; gap:5px; padding:8px; }
+  .nav__toggle span{ width:22px; height:2px; background:var(--foam); border-radius:2px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(circle at 15% -10%, rgba(63,214,224,0.16), transparent 45%),
+      linear-gradient(180deg, var(--ink) 0%, var(--pool-2) 100%);
+    color:var(--foam);
+    padding:88px 0 110px;
+    overflow:hidden;
+  }
+  .hero__pill{
+    display:inline-flex; align-items:center; gap:9px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--cyan);
+    border:1px solid rgba(63,214,224,0.35);
+    padding:8px 16px; border-radius:999px;
+    margin-bottom:26px;
+  }
+  .hero__pill i{ width:7px; height:7px; border-radius:50%; background:var(--cyan); display:inline-block; animation:pulse 2s ease-in-out infinite; }
+  .hero h1{
+    font-size:clamp(42px, 6.6vw, 88px);
+    color:var(--foam);
+    max-width:900px;
+  }
+  .hero h1 em{ font-style:normal; color:var(--gold); }
+  .hero__sub{
+    font-size:clamp(16px,1.8vw,19px);
+    color:rgba(246,251,251,0.8);
+    max-width:56ch;
+    margin-top:24px;
+  }
+  .hero__ctas{ display:flex; gap:16px; flex-wrap:wrap; margin-top:36px; }
+
+  .scrub-card{
+    margin-top:72px;
+    background:linear-gradient(180deg, rgba(18,50,74,0.85), rgba(14,38,56,0.92));
+    border:1px solid rgba(63,214,224,0.25);
+    border-radius:22px;
+    padding:30px;
+    box-shadow:0 40px 90px rgba(0,0,0,0.4);
+  }
+  .scrub-card__tag{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:rgba(246,251,251,0.55); margin-bottom:16px;
+  }
+  .scrub-card__frame{
+    position:relative;
+    border-radius:16px;
+    overflow:hidden;
+    background:linear-gradient(180deg, rgba(63,214,224,0.1), rgba(11,18,32,0.55));
+    padding:30px 24px 22px;
+    min-height:200px;
+  }
+  .scrub-card__play{
+    position:absolute; top:38%; left:50%; transform:translate(-50%,-50%);
+    width:76px; height:76px; border-radius:50%;
+    background:rgba(246,251,251,0.14);
+    border:1.5px solid rgba(246,251,251,0.4);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .scrub-card__play svg{ width:22px; height:22px; }
+  .scrub-card__swimmer{ width:100%; opacity:0.9; }
+
+  .scrub{ margin-top:22px; }
+  .scrub__track{ position:relative; height:4px; background:rgba(246,251,251,0.18); border-radius:4px; margin:0 6px; }
+  .scrub__fill{ position:absolute; left:0; top:0; height:100%; width:63%; background:var(--cyan); border-radius:4px; opacity:0.7; }
+  .scrub__playhead{ position:absolute; top:50%; width:14px; height:14px; border-radius:50%; background:var(--gold); transform:translate(-50%,-50%); box-shadow:0 0 0 4px rgba(242,184,75,0.22); }
+  .scrub__pin{ position:absolute; top:50%; width:9px; height:9px; border-radius:50%; background:var(--foam); transform:translate(-50%,-50%); animation:pulse 2.6s ease-in-out infinite; }
+  .scrub__notes{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-top:22px; }
+  .scrub__note{ display:flex; flex-direction:column; gap:6px; }
+  .scrub__time{ font-family:var(--font-mono); font-size:13px; color:var(--gold); font-weight:700; }
+  .scrub__note span:last-child{ font-size:14px; color:rgba(246,251,251,0.85); font-weight:500; }
+  .scrub-card__caption{ font-size:14px; color:rgba(246,251,251,0.55); margin-top:24px; }
+
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+
+  /* ---------- GAP SECTION ---------- */
+  .gap-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:36px; }
+  .gap-card__label{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em; color:var(--pool); font-weight:700; }
+  .gap-card h3{ font-size:19px; text-transform:none; letter-spacing:0; margin-top:10px; margin-bottom:12px; }
+  .gap-card p{ color:var(--navy-soft); font-size:15.5px; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{ display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
+  .step{ position:relative; padding-top:8px; border-top:2px solid var(--border); }
+  .step__num{ font-family:var(--font-mono); font-size:15px; font-weight:700; color:var(--cyan); background:var(--ink); display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; margin-top:-25px; margin-bottom:20px; }
+  .step h3{ font-size:16.5px; letter-spacing:0.02em; margin-bottom:10px; }
+  .step p{ color:var(--navy-soft); font-size:15px; }
+
+  /* ---------- SAMPLE BREAKDOWN ---------- */
+  .sample-card{
+    background:var(--ink);
+    border-radius:22px;
+    padding:40px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:44px;
+    align-items:center;
+    color:var(--foam);
+  }
+  .sample-card__mini .scrub-card__frame{ min-height:140px; padding:20px; }
+  .sample-card__mini .scrub__notes{ grid-template-columns:1fr; gap:10px; margin-top:16px; }
+  .sample-card__mini .scrub__note{ flex-direction:row; gap:10px; align-items:baseline; }
+  .sample-card__badge{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(246,251,251,0.5); margin-bottom:14px; }
+  .sample-card__right h3{ color:var(--foam); font-size:22px; margin-bottom:18px; }
+  .sample-list{ display:flex; flex-direction:column; gap:12px; margin-bottom:24px; }
+  .sample-list li{ display:flex; gap:10px; font-size:15px; color:rgba(246,251,251,0.85); }
+  .sample-list li::before{ content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; }
+  .sample-drills{ font-size:13px; font-family:var(--font-mono); color:rgba(246,251,251,0.5); letter-spacing:0.02em; }
+
+  .feature-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; margin-top:56px; }
+  .feature-row__item h4{ font-family:var(--font-mono); font-size:14px; color:var(--pool); letter-spacing:0.02em; margin-bottom:8px; }
+  .feature-row__item p{ color:var(--navy-soft); font-size:15px; }
+
+  /* ---------- PRICING ---------- */
+  .pricing-group{ margin-top:44px; }
+  .pricing-group__label{ font-family:var(--font-mono); font-size:12.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--navy-soft); font-weight:700; margin-bottom:18px; }
+  .pricing-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:28px; }
+  .price-card{ background:var(--white); border:1.5px solid var(--border); border-top:4px solid var(--cyan); border-radius:18px; padding:38px; display:flex; flex-direction:column; gap:16px; position:relative; }
+  .price-card--premium{ border-top-color:var(--gold); }
+  .price-card__name{ font-size:14px; font-weight:800; letter-spacing:0.04em; color:var(--navy-soft); text-transform:uppercase; }
+  .price-card__amount{ font-family:var(--font-mono); font-size:48px; font-weight:700; color:var(--navy); }
+  .price-card__amount span{ font-size:15px; color:var(--navy-soft); font-weight:400; margin-left:4px; }
+  .price-card ul{ display:flex; flex-direction:column; gap:11px; margin:6px 0 8px; }
+  .price-card li{ display:flex; gap:10px; font-size:14.5px; color:var(--navy-soft); align-items:flex-start; }
+  .price-card li::before{ content:"✓"; color:var(--cyan); font-weight:700; flex-shrink:0; }
+  .pricing-callout{ margin-top:40px; border:1.5px solid var(--border); background:var(--foam); border-radius:16px; padding:26px 30px; display:flex; flex-direction:column; gap:10px; }
+  .pricing-callout p{ font-size:14.5px; color:var(--navy-soft); }
+  .pricing-callout strong{ color:var(--navy); }
+  .pricing-callout a{ color:var(--pool); font-weight:700; text-decoration:underline; }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; }
+  .avatar{ width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, var(--pool), var(--ink)); color:var(--gold); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:38px; font-weight:900; border:3px solid var(--gold); margin-bottom:24px; }
+  .about-name{ font-size:26px; margin-bottom:6px; }
+  .about-title{ color:var(--navy-soft); font-size:14.5px; font-weight:600; margin-bottom:22px; }
+  .about-bio{ color:var(--navy-soft); font-size:16px; }
+  .chips{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .chip{ border:1.5px solid var(--border); border-radius:12px; padding:15px 16px; font-size:13.5px; font-weight:600; color:var(--navy); background:var(--white); line-height:1.35; }
+
+  /* ---------- TESTIMONIALS ---------- */
+  .testimonial-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .sample-tag{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--navy-soft); background:var(--white); border:1px solid var(--border); padding:5px 11px; border-radius:999px; }
+  .quote-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:32px; }
+  .quote-card{ background:var(--white); border:1.5px solid var(--border); border-radius:16px; padding:30px; display:flex; flex-direction:column; gap:18px; }
+  .quote-card p{ font-size:15.5px; color:var(--navy); }
+  .quote-card cite{ font-style:normal; font-size:13px; color:var(--navy-soft); font-weight:700; }
+
+  /* ---------- FAQ ---------- */
+  .faq-list{ max-width:760px; }
+  .faq-item{ border-bottom:1px solid var(--border); }
+  .faq-item__q{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:20px; padding:24px 4px; text-align:left; font-size:16.5px; font-weight:700; color:var(--navy); }
+  .faq-item__icon{ font-family:var(--font-mono); font-size:20px; color:var(--pool); transition:transform .25s ease; flex-shrink:0; }
+  .faq-item.is-open .faq-item__icon{ transform:rotate(45deg); }
+  .faq-item__a{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s ease; }
+  .faq-item__a-inner{ overflow:hidden; }
+  .faq-item__a-inner p{ padding:0 4px 24px; color:var(--navy-soft); font-size:15px; max-width:64ch; }
+  .faq-item.is-open .faq-item__a{ grid-template-rows:1fr; }
+
+  /* ---------- FOOTER / CONTACT ---------- */
+  .footer{ padding:104px 0 40px; }
+  .footer .section__head{ max-width:600px; }
+  .contact-grid{ display:grid; grid-template-columns:1.25fr 1fr; gap:64px; margin-top:12px; }
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field label{ font-size:13px; font-weight:700; color:var(--foam); }
+  .field input, .field select, .field textarea{
+    font-family:var(--font-body); font-size:15px; padding:13px 14px;
+    border:1.5px solid rgba(246,251,251,0.2); border-radius:10px;
+    background:rgba(246,251,251,0.06); color:var(--foam);
+  }
+  .field input::placeholder, .field textarea::placeholder{ color:rgba(246,251,251,0.4); }
+  .field select{ color:var(--foam); }
+  .field select option{ color:var(--ink); }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--cyan); outline:none; }
+  .contact-form{ display:grid; gap:18px; }
+  .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .form-hint{ font-size:13px; color:rgba(246,251,251,0.5); margin-top:-4px; }
+  .field-hint{ font-size:12.5px; color:rgba(246,251,251,0.55); margin-top:1px; }
+  .field-hint a{ color:var(--cyan); font-weight:600; text-decoration:underline; }
+  #form-status{ font-size:13.5px; color:var(--cyan); min-height:18px; }
+
+  .direct h3{ color:var(--foam); font-size:15px; letter-spacing:0.04em; margin-bottom:20px; }
+  .direct-item{ display:block; font-size:16px; font-weight:700; color:var(--foam); margin-bottom:6px; }
+  .direct-sub{ font-size:14px; color:rgba(246,251,251,0.6); margin-bottom:26px; }
+  .social-row{ display:flex; gap:14px; margin-top:8px; }
+  .social-row a{ width:38px; height:38px; border-radius:50%; border:1px solid rgba(246,251,251,0.25); display:flex; align-items:center; justify-content:center; transition:border-color .15s ease, color .15s ease; }
+  .social-row a:hover{ border-color:var(--cyan); color:var(--cyan); }
+  .social-row svg{ width:16px; height:16px; }
+
+  .footer-bottom{ margin-top:90px; padding-top:28px; border-top:1px solid rgba(246,251,251,0.12); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:13px; color:rgba(246,251,251,0.45); }
+
+  /* ---------- REVEAL ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    .hero__pill i, .scrub__pin{ animation:none; }
+    *{ scroll-behavior:auto !important; }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:960px){
+    .nav__links{ display:none; }
+    .nav--open .nav__links{
+      display:flex; flex-direction:column; align-items:flex-start; gap:20px;
+      position:absolute; top:78px; left:0; right:0; background:var(--ink);
+      padding:26px 28px; border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .nav__toggle{ display:flex; }
+    .gap-grid, .steps, .quote-grid{ grid-template-columns:1fr; gap:32px; }
+    .step{ border-top:none; border-left:2px solid var(--border); padding-left:20px; padding-top:0; }
+    .step__num{ margin-top:0; margin-left:-17px; }
+    .sample-card{ grid-template-columns:1fr; }
+    .pricing-grid{ grid-template-columns:1fr; }
+    .about-grid{ grid-template-columns:1fr; gap:40px; }
+    .chips{ grid-template-columns:1fr 1fr; }
+    .contact-grid{ grid-template-columns:1fr; gap:48px; }
+    .feature-row{ grid-template-columns:1fr; gap:28px; }
+    .section{ padding:76px 0; }
+  }
+  @media (max-width:640px){
+    .scrub__notes{ grid-template-columns:1fr 1fr; }
+    .row-2{ grid-template-columns:1fr; }
+    .hero__ctas .btn{ width:100%; justify-content:center; }
+    .chips{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="top">
+  <div class="container">
+    <a class="nav__brand" href="#top">
+      <span class="nav__mark">JB</span>
+      <span class="nav__word">BILLOTTE<small>Swim Analysis</small></span>
+    </a>
+    <nav class="nav__links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#sample">What You Get</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#about">About</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav__right">
+      <a href="#contact" class="btn btn--primary">Submit a Video</a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="container">
+    <span class="hero__pill"><i></i>Now booking — 48-hour turnaround</span>
+    <h1>Film it. Learn it. Swim <em>faster.</em></h1>
+    <p class="hero__sub">Parents are filming more races than ever. Turning that footage into faster splits takes a coach's eye — I break down your swimmer's race, stroke by stroke and turn by turn, so every video becomes a lesson.</p>
+    <div class="hero__ctas">
+      <a href="#contact" class="btn btn--primary">Submit a Video — From $25</a>
+      <a href="#sample" class="btn btn--ghost">See a Sample Breakdown</a>
+    </div>
+
+    <div class="scrub-card reveal">
+      <div class="scrub-card__tag">Sample annotation — 50 free, 11–12 girls</div>
+      <div class="scrub-card__frame">
+        <div class="scrub-card__play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 5l12 7-12 7V5z" fill="#F6FBFB"/></svg>
+        </div>
+        <svg class="scrub-card__swimmer" viewBox="0 0 320 150" aria-hidden="true" focusable="false">
+          <line x1="0" y1="128" x2="320" y2="128" stroke="#3FD6E0" stroke-opacity="0.28" stroke-width="2" stroke-dasharray="1 14" stroke-linecap="round"/>
+          <path d="M28 108 Q40 100 56 106" stroke="#3FD6E0" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+          <path d="M22 116 Q36 106 54 114" stroke="#3FD6E0" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.3"/>
+          <path d="M252 116 Q264 104 282 110" stroke="#3FD6E0" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+          <path d="M258 126 Q272 116 290 120" stroke="#3FD6E0" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.28"/>
+          <path d="M40 104 Q80 92 118 84 Q150 88 178 96 Q210 104 236 116" stroke="#F6FBFB" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+          <path d="M118 84 Q126 54 140 44 Q152 36 164 44" stroke="#F6FBFB" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+          <circle cx="134" cy="70" r="14" fill="#F6FBFB" opacity="0.55"/>
+        </svg>
+      </div>
+      <div class="scrub">
+        <div class="scrub__track">
+          <span class="scrub__fill"></span>
+          <span class="scrub__playhead" style="left:63%"></span>
+          <span class="scrub__pin" style="left:12%"></span>
+          <span class="scrub__pin" style="left:38%"></span>
+          <span class="scrub__pin" style="left:63%"></span>
+          <span class="scrub__pin" style="left:88%"></span>
+        </div>
+        <div class="scrub__notes">
+          <div class="scrub__note"><span class="scrub__time">0:08</span><span>Late breakout</span></div>
+          <div class="scrub__note"><span class="scrub__time">0:19</span><span>Breathing breaks tempo</span></div>
+          <div class="scrub__note"><span class="scrub__time">0:31</span><span>Strong back half</span></div>
+          <div class="scrub__note"><span class="scrub__time">0:44</span><span>Early finish, no glide</span></div>
+        </div>
+      </div>
+      <p class="scrub-card__caption">A real breakdown looks like this — notes timestamped to the exact moment they happen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THE GAP ================= -->
+<section class="section" id="gap">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Lane 01 — The Gap</span>
+      <h2>Filming isn't the hard part anymore</h2>
+      <p>Every meet gets recorded from three angles by three different parents. Almost none of that footage gets used.</p>
+    </div>
+    <div class="gap-grid">
+      <div class="gap-card reveal">
+        <div class="gap-card__label">WHAT'S CHANGED</div>
+        <h3>Everyone's filming now</h3>
+        <p>Phones, GoPros, and meet livestreams mean most swimmers already have race footage sitting in a camera roll after every meet.</p>
+      </div>
+      <div class="gap-card reveal">
+        <div class="gap-card__label">WHAT'S MISSING</div>
+        <h3>Raw footage doesn't teach itself</h3>
+        <p>Watching a race at full speed hides the details that matter — hand entry, tempo, breakout timing, where technique breaks down under fatigue.</p>
+      </div>
+      <div class="gap-card reveal">
+        <div class="gap-card__label">WHAT I DO</div>
+        <h3>A trained eye turns clips into fixes</h3>
+        <p>I slow it down, mark it up, and translate what's on screen into three things your swimmer can work on at the very next practice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="section" id="how-it-works" style="background:var(--white);">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Lane 02 — How It Works</span>
+      <h2>From race to review in four steps</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="step__num">01</span>
+        <h3>Submit your video</h3>
+        <p>Send a link to the footage — meet livestream, phone footage, whatever you've got — along with which analysis you'd like.</p>
+      </div>
+      <div class="step reveal">
+        <span class="step__num">02</span>
+        <h3>I break it down</h3>
+        <p>Frame-by-frame review of stroke mechanics, tempo, turns, and finish, using the same lens I use with my own age-group squad.</p>
+      </div>
+      <div class="step reveal">
+        <span class="step__num">03</span>
+        <h3>You get the breakdown</h3>
+        <p>A narrated video with on-screen markups, plus written notes, delivered straight to your inbox within 48 hours.</p>
+      </div>
+      <div class="step reveal">
+        <span class="step__num">04</span>
+        <h3>Take it to practice</h3>
+        <p>Three focus points and simple drills, ready to hand to a coach or work on together at the pool.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SAMPLE / WHAT YOU GET ================= -->
+<section class="section" id="sample">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Lane 03 — What You Get</span>
+      <h2>What actually shows up in your inbox</h2>
+      <p>Not a generic report — a breakdown built around your swimmer's actual race, timestamped to the moment each thing happens.</p>
+    </div>
+
+    <div class="sample-card reveal">
+      <div class="sample-card__mini">
+        <div class="scrub-card__frame">
+          <div class="scrub-card__play" aria-hidden="true" style="width:56px;height:56px;">
+            <svg viewBox="0 0 24 24" fill="none" style="width:16px;height:16px;"><path d="M8 5l12 7-12 7V5z" fill="#F6FBFB"/></svg>
+          </div>
+        </div>
+        <div class="scrub__notes">
+          <div class="scrub__note"><span class="scrub__time">0:11</span><span>Early vertical forearm slips</span></div>
+          <div class="scrub__note"><span class="scrub__time">0:38</span><span>Breathing pattern breaks tempo</span></div>
+          <div class="scrub__note"><span class="scrub__time">0:47</span><span>Strong, controlled finish</span></div>
+        </div>
+      </div>
+      <div class="sample-card__right">
+        <div class="sample-card__badge">Sample race analysis — 11–12 girls 50 free</div>
+        <h3>Focus Points</h3>
+        <ul class="sample-list">
+          <li>Early vertical forearm catch — hand slips before the pull begins</li>
+          <li>Breathing pattern breaks tempo on the back half</li>
+          <li>Strong, controlled finish into the wall</li>
+        </ul>
+        <div class="sample-drills">DRILLS: Catch-up drill 4x50 · Bilateral breathing ladder 8x25</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-row__item reveal">
+        <h4>5–8 MIN NARRATED VIDEO</h4>
+        <p>Screen-recorded with on-screen markups, at a pace you can pause and rewatch.</p>
+      </div>
+      <div class="feature-row__item reveal">
+        <h4>ONE-PAGE WRITTEN NOTES</h4>
+        <p>Three focus points and simple drills, easy to hand straight to a practice coach.</p>
+      </div>
+      <div class="feature-row__item reveal">
+        <h4>48-HOUR DELIVERY</h4>
+        <p>Straight to your inbox, ready to talk through before the next practice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section class="section" id="pricing" style="background:var(--white);">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Lane 04 — Pricing</span>
+      <h2>Pay-per-video pricing</h2>
+      <p>No subscriptions. Pick the analysis that fits what you need — price scales with how much of the race gets broken down.</p>
+    </div>
+
+    <div class="pricing-group">
+      <div class="pricing-group__label">Focused Analysis — dial in one element</div>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <div class="price-card__name">Standalone Stroke Analysis</div>
+          <div class="price-card__amount">$25<span>/ video</span></div>
+          <ul>
+            <li>One stroke of your choice</li>
+            <li>Practice or race footage — either works</li>
+            <li>5–8 minute narrated video + written notes</li>
+            <li>48-hour turnaround</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">Submit a Video</a>
+        </div>
+        <div class="price-card reveal">
+          <div class="price-card__name">Starts &amp; Turns Analysis</div>
+          <div class="price-card__amount">$25<span>/ video</span></div>
+          <ul>
+            <li>Starts, turns, or both — your choice</li>
+            <li>Above and underwater footage welcome</li>
+            <li>5–8 minute narrated video + written notes</li>
+            <li>48-hour turnaround</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">Submit a Video</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pricing-group">
+      <div class="pricing-group__label">Full Race Analysis — start to finish</div>
+      <div class="pricing-grid">
+        <div class="price-card price-card--premium reveal">
+          <div class="price-card__name">Race Analysis — Single Stroke</div>
+          <div class="price-card__amount">$45<span>/ video</span></div>
+          <ul>
+            <li>Full race: start, stroke, turns, finish</li>
+            <li>Free, back, breast, or fly</li>
+            <li>5–8 minute narrated video + written notes</li>
+            <li>48-hour turnaround</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">Submit a Video</a>
+        </div>
+        <div class="price-card price-card--premium reveal">
+          <div class="price-card__name">Race Analysis — IM</div>
+          <div class="price-card__amount">$65<span>/ video</span></div>
+          <ul>
+            <li>Full race across all four strokes</li>
+            <li>Every transition and turn included</li>
+            <li>The most detailed breakdown offered</li>
+            <li>48-hour turnaround</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">Submit a Video</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pricing-callout reveal">
+      <p><strong>Submitting 3+ videos from the same meet?</strong> Save 15% — mix and match any service above.</p>
+      <p><strong>Coaching a group or a whole squad?</strong> <a href="#contact">Ask about team rates.</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Lane 05 — Your Coach</span>
+      <h2>Who's behind the breakdown</h2>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="avatar">JB</div>
+        <div class="about-name">Joshua Billotte</div>
+        <div class="about-title">Lead Age Group Coach, North Coast Aquatics · ASCA Level 3 Performance Coach</div>
+        <p class="about-bio">I've spent the last several years on both sides of the water — racing distance freestyle, IM, and butterfly for Cal Poly San Luis Obispo in the MPSF and Big West Conference, and coaching age-group swimmers from 10U through pre-senior at North Coast Aquatics. I've also worked camps under Olympic coach Nick Baker at PEAK Performance Swim Camp, where video analysis was the fastest way to turn a technique note into a real change. An ASCA Top 25 Age Group Coach award in 2025 and an ASCA Level 3 certification back a simple idea: show a swimmer exactly what's happening in the water, and they fix it faster than any amount of poolside shouting.</p>
+      </div>
+      <div class="chips reveal">
+        <div class="chip">B.S. Kinesiology – Sport Science, Cal Poly SLO</div>
+        <div class="chip">NCAA D1 Athlete — MPSF &amp; Big West</div>
+        <div class="chip">ASCA Level 3 Performance Coach</div>
+        <div class="chip">ASCA Top 25 Age Group Coach, 2025</div>
+        <div class="chip">ISSA Personal Trainer / Strength &amp; Conditioning / Nutrition</div>
+        <div class="chip">Red Cross Lifeguard, CPR/AED — Professional Rescuer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="section" id="testimonials" style="background:var(--white);">
+  <div class="container">
+    <div class="section__head reveal">
+      <div class="testimonial-head">
+        <span class="eyebrow">Lane 06 — From The Deck</span>
+        <span class="sample-tag">Sample quotes — swap in your own</span>
+      </div>
+      <h2 style="margin-top:14px;">What parents are saying</h2>
+    </div>
+    <div class="quote-grid">
+      <div class="quote-card reveal">
+        <p>"My daughter watched her breakdown three times before practice. She knew exactly what to fix before she even got in the water."</p>
+        <cite>— Age-group swim parent</cite>
+      </div>
+      <div class="quote-card reveal">
+        <p>"We'd filmed a dozen races and never known what to do with the footage. Now every meet turns into a lesson."</p>
+        <cite>— 12U swim parent</cite>
+      </div>
+      <div class="quote-card reveal">
+        <p>"Specific, easy to understand, and fast. Exactly what we needed heading into championship season."</p>
+        <cite>— Club swim parent</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Lane 07 — Questions</span>
+      <h2>Frequently asked</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>What video quality do I need?</span>
+          <span class="faq-item__icon">+</span>
+        </button>
+        <div class="faq-item__a"><div class="faq-item__a-inner"><p>Any smartphone video works. A side-view shot from above water is ideal. Underwater footage is a great bonus, but it isn't required.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>My video file is too big to email — what do I do?</span>
+          <span class="faq-item__icon">+</span>
+        </button>
+        <div class="faq-item__a"><div class="faq-item__a-inner"><p>Skip email — race clips are almost always too big for it. Upload free at wetransfer.com (no account needed), then paste the link it gives you into the Video Link field. YouTube, Google Drive, or Dropbox links work too if you already have one.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>How long does it take?</span>
+          <span class="faq-item__icon">+</span>
+        </button>
+        <div class="faq-item__a"><div class="faq-item__a-inner"><p>48 hours from when I receive the video and race details.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>What age groups do you work with?</span>
+          <span class="faq-item__icon">+</span>
+        </button>
+        <div class="faq-item__a"><div class="faq-item__a-inner"><p>Mostly 8-and-under through 14, but any age-group swimmer is welcome.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>What if my swimmer doesn't have race footage yet?</span>
+          <span class="faq-item__icon">+</span>
+        </button>
+        <div class="faq-item__a"><div class="faq-item__a-inner"><p>Practice footage works too. Film a 25 or 50 at your next practice and send that instead.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>Do you work with whole teams?</span>
+          <span class="faq-item__icon">+</span>
+        </button>
+        <div class="faq-item__a"><div class="faq-item__a-inner"><p>Yes — reach out about group rates for a squad or training group.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT / FOOTER ================= -->
+<footer class="footer section--dark" id="contact">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Lane 08 — Get Started</span>
+      <h2>Ready to see what's actually happening in the water?</h2>
+      <p>Send a video, get a breakdown in 48 hours.</p>
+    </div>
+
+    <div class="contact-grid">
+      <form class="contact-form reveal" id="contactForm">
+        <div class="row-2">
+          <div class="field">
+            <label for="f-name">Parent / Guardian Name</label>
+            <input type="text" id="f-name" name="name" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" name="email" required>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="f-age">Swimmer's Age Group</label>
+            <select id="f-age" name="age_group" required>
+              <option value="">Select one</option>
+              <option>8 &amp; Under</option>
+              <option>9–10</option>
+              <option>11–12</option>
+              <option>13–14</option>
+              <option>15+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-package">Service</label>
+            <select id="f-package" name="package">
+              <option>Standalone Stroke Analysis – $25</option>
+              <option>Starts &amp; Turns Analysis – $25</option>
+              <option>Race Analysis – Single Stroke – $45</option>
+              <option>Race Analysis – IM – $65</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-race">Race / Stroke</label>
+          <input type="text" id="f-race" name="race" placeholder="e.g. 50 Free">
+        </div>
+        <div class="field">
+          <label for="f-video">Video Link</label>
+          <input type="text" id="f-video" name="video_link" placeholder="WeTransfer, YouTube, Drive, Dropbox…">
+          <p class="field-hint">No link yet? Race clips are usually too big to email — upload free at <a href="https://wetransfer.com" target="_blank" rel="noopener">wetransfer.com</a> (no account needed) and paste the link it gives you here.</p>
+        </div>
+        <div class="field">
+          <label for="f-notes">Notes (optional)</label>
+          <textarea id="f-notes" name="notes" rows="3" placeholder="Anything specific you want me to focus on?"></textarea>
+        </div>
+        <div>
+          <button type="submit" class="btn btn--primary">Send Video Details</button>
+          <p class="form-hint" style="margin-top:12px;">This opens your email app with the details filled in, so you can attach or link the video there.</p>
+          <p id="form-status"></p>
+        </div>
+      </form>
+
+      <div class="direct reveal">
+        <h3>PREFER TO REACH OUT DIRECTLY?</h3>
+        <a class="direct-item" href="mailto:joshuabil04@hotmail.com">joshuabil04@hotmail.com</a>
+        <a class="direct-item" href="tel:+18058146077">(805) 814-6077</a>
+        <p class="direct-sub">Based in Oceanside, CA · Coaching at North Coast Aquatics, Carlsbad</p>
+        <div class="social-row">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 9h3V6h-3a3 3 0 0 0-3 3v2H8v3h3v6h3v-6h3l1-3h-4V9a1 1 0 0 1 1-1z"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Billotte Swim Analysis. Built for swimmers who want to know why, not just what.</span>
+      <span>Oceanside, CA</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  var navToggle = document.getElementById('navToggle');
+  var nav = document.querySelector('.nav');
+  navToggle.addEventListener('click', function(){
+    var open = nav.classList.toggle('nav--open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.querySelectorAll('.nav__links a').forEach(function(a){
+    a.addEventListener('click', function(){ nav.classList.remove('nav--open'); });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item__q').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var item = btn.closest('.faq-item');
+      var isOpen = item.classList.contains('is-open');
+      document.querySelectorAll('.faq-item.is-open').forEach(function(openItem){
+        if(openItem !== item){
+          openItem.classList.remove('is-open');
+          openItem.querySelector('.faq-item__q').setAttribute('aria-expanded','false');
+        }
+      });
+      item.classList.toggle('is-open', !isOpen);
+      btn.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+    });
+  });
+
+  // Scroll reveal
+  var revealEls = document.querySelectorAll('.reveal');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if('IntersectionObserver' in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  // Contact form -> mailto
+  var form = document.getElementById('contactForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(form);
+    var name = data.get('name') || '';
+    var email = data.get('email') || '';
+    var ageGroup = data.get('age_group') || '';
+    var pkg = data.get('package') || '';
+    var race = data.get('race') || '';
+    var videoLink = data.get('video_link') || '';
+    var notes = data.get('notes') || '';
+
+    var subject = 'Video Review Request — ' + (ageGroup || name);
+    var bodyLines = [
+      'Parent/Guardian: ' + name,
+      'Email: ' + email,
+      'Swimmer age group: ' + ageGroup,
+      'Package: ' + pkg,
+      'Race / stroke: ' + race,
+      'Video link: ' + videoLink,
+      'Notes: ' + notes
+    ];
+    var mailto = 'mailto:joshuabil04@hotmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+    var status = document.getElementById('form-status');
+    if(status) status.textContent = 'Opening your email app…';
+    window.location.href = mailto;
+  });
+</script>
+</body>
+</html>
